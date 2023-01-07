@@ -10,19 +10,19 @@ fi
 
 if [ $1 == "--help" ];
 then
-    echo "Preparing Cluster node"
-	echo "\n\nPrereq:\n\nFirst master of cluster must have accesible dns name master-01, for high availability loadbalancer with accesible dns name LoadBalancer must exist\n\n"
-    echo "\n\nUsage:"
-    echo "\n    ./do_all -s [joining token] -i [ip of machine] -n [ip of loadbalancer] -m[/w] -l -c -b"
-	echo "\n\nOptions:\n"
-	echo "    -s    token for joining cluster (or for other nodes to join if this node is first master, aka boss)    default value: 'SECRET'"
-	echo "    -i    ip of machine, is important if cannot be simply detected by programm (ip must be accesible from other nodes of cluster at least on 6443 and 10250 ports)    default value: is defined through ipconfig.exe -> Wireless LAN adapter Wi-Fi if wsl, through ip a show eth0 otherwise"
-	echo "    -n    ip of loadbalancer (nessesary only if this is first node in cluster for adding ip of LB to cluster TLS cert)    default value: same as ip of machine"
-	echo "    -m    join node as master (controlplane)    default value: node type is worker"
-	echo "    -w    join node as worker (cannot be specified with -m option)    default value: node type is worker"
-	echo "    -l    run cluster loadbalancer on this node    default value: false"
-	echo "    -c    make all nessesary files executable (jic)    default value: false"
-	echo "    -b    make node first in cluster (aka boss, only valid with -m flag)    default value: false"
+    echo -e "Preparing Cluster node"
+	echo -e "\n\nPrereq:\n\nFirst master of cluster must have accesible dns name master-01, for high availability loadbalancer with accesible dns name LoadBalancer must exist\n\n"
+    echo -e "\n\nUsage:"
+    echo -e "\n    ./do_all -s [joining token] -i [ip of machine] -n [ip of loadbalancer] -m[/w] -l -c -b"
+	echo -e "\n\nOptions:"
+	echo -e "\n    -s    token for joining cluster (or for other nodes to join if this node is first master, aka boss)    default value: 'SECRET'"
+	echo -e "\n    -i    ip of machine, is important if cannot be simply detected by programm (ip must be accesible from other nodes of cluster at least on 6443 and 10250 ports)    default value: is defined through ipconfig.exe -> Wireless LAN adapter Wi-Fi if wsl, through ip a show eth0 otherwise"
+	echo -e "\n    -n    ip of loadbalancer (nessesary only if this is first node in cluster for adding ip of LB to cluster TLS cert)    default value: same as ip of machine"
+	echo -e "\n    -m    join node as master (controlplane)    default value: node type is worker"
+	echo -e "\n    -w    join node as worker (cannot be specified with -m option)    default value: node type is worker"
+	echo -e "\n    -l    run cluster loadbalancer on this node    default value: false"
+	echo -e "\n    -c    make all nessesary files executable (jic)    default value: false"
+	echo -e "\n    -b    make node first in cluster (aka boss, only valid with -m flag)    default value: false"
 	
     exit 0
 fi
