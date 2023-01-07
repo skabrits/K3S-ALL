@@ -68,7 +68,7 @@ then
 	sudo chmod u+x "$SCRIPTPATH/master_finish.sh"
 	sudo chmod u+x "$SCRIPTPATH/worker.sh"
 	sudo chmod u+x "$SCRIPTPATH/lb.sh"
-	
+fi
 
 if $is_loadbalancer
 then
