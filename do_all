@@ -11,8 +11,19 @@ fi
 if [ $1 == "--help" ];
 then
     echo "Preparing Cluster node"
+	echo "\n\nPrereq:\n\nFirst master of cluster must have accesible dns name master-01, for high availability loadbalancer with accesible dns name LoadBalancer must exist\n\n"
     echo "\n\nUsage:"
-    echo "Usage for decrypting: ./unicrypt -d [password] -f [file]"
+    echo "\n    ./do_all -s [joining token] -i [ip of machine] -n [ip of loadbalancer] -m[/w] -l -c -b"
+	echo "\n\nOptions:\n"
+	echo "    -s    token for joining cluster (or for other nodes to join if this node is first master, aka boss)    default value: 'SECRET'"
+	echo "    -i    ip of machine, is important if cannot be simply detected by programm (ip must be accesible from other nodes of cluster at least on 6443 and 10250 ports)    default value: is defined through ipconfig.exe -> Wireless LAN adapter Wi-Fi if wsl, through ip a show eth0 otherwise"
+	echo "    -n    ip of loadbalancer (nessesary only if this is first node in cluster for adding ip of LB to cluster TLS cert)    default value: same as ip of machine"
+	echo "    -m    join node as master (controlplane)    default value: node type is worker"
+	echo "    -w    join node as worker (cannot be specified with -m option)    default value: node type is worker"
+	echo "    -l    run cluster loadbalancer on this node    default value: false"
+	echo "    -c    make all nessesary files executable (jic)    default value: false"
+	echo "    -b    make node first in cluster (aka boss, only valid with -m flag)    default value: false"
+	
     exit 0
 fi
 
@@ -22,8 +33,8 @@ is_boss=false
 secret_key=SECRET
 need_chmod=false
 
-ip_lb=$(ip a show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f1)
-ip_self=$(ip a show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f1)
+ip_lb=$(if command -v ipconfig.exe &> /dev/null; then ipconfig.exe | grep "Wireless LAN adapter Wi-Fi" -A 6 | grep "IPv4 Address" | awk -F ': ' '{print $2}'; else ip a show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f1; fi)
+ip_self=$(if command -v ipconfig.exe &> /dev/null; then ipconfig.exe | grep "Wireless LAN adapter Wi-Fi" -A 6 | grep "IPv4 Address" | awk -F ': ' '{print $2}'; else ip a show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f1; fi)
 
 req_flag=0
 
@@ -34,8 +45,8 @@ do
                 s) secret_key=$OPTARG ;;
 				i) ip_self=$OPTARG ;;
 				n) ip_lb=$OPTARG ;;
-                m) password=$OPTARG; $req_flag && is_worker=false; req_flag=$((req_flag+1)) ;;
-                w) password=$OPTARG; $req_flag && is_worker=true; req_flag=$((req_flag+1)) ;;
+                m) is_worker=false; req_flag=$((req_flag+1)) ;;
+                w) is_worker=true; req_flag=$((req_flag+1)) ;;
 				l) is_loadbalancer=true ;;
 				c) need_chmod=true ;;
 				b) is_boss=true ;;
@@ -66,13 +77,13 @@ fi
 
 if $is_worker
 then
-    bash "$SCRIPTPATH"/worker.sh 
+    bash "$SCRIPTPATH"/worker.sh "$ip_self" "$secret_key"
 else
     if $is_boss
 	then
-	    bash "$SCRIPTPATH"/boss.sh
+	    bash "$SCRIPTPATH"/boss.sh "$ip_self" "$ip_lb" "$secret_key"
 	else
-	    bash "$SCRIPTPATH"/master.sh
+	    bash "$SCRIPTPATH"/master.sh "$ip_self" "$secret_key"
 	fi
 	bash "$SCRIPTPATH"/master_finish.sh
 fi
