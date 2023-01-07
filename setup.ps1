@@ -1,0 +1,23 @@
+netsh advfirewall firewall add rule name= "Open Port 6443 K8S" dir=in action=allow protocol=TCP localport=6443
+netsh advfirewall firewall add rule name= "Open Port 10250 K8S" dir=in action=allow protocol=TCP localport=10250
+netsh advfirewall firewall add rule name= "Open Port 2379 K8S" dir=in action=allow protocol=TCP localport=2379
+netsh advfirewall firewall add rule name= "Open Port 2380 K8S" dir=in action=allow protocol=TCP localport=2380
+netsh advfirewall firewall add rule name= "Open Port 10259 K8S" dir=in action=allow protocol=TCP localport=10259
+netsh advfirewall firewall add rule name= "Open Port 10257 K8S" dir=in action=allow protocol=TCP localport=10257
+
+Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+wsl --install -d Ubuntu
+wsl --update
+
+wsl --set-default-version 2
+
+$wsl_ip=$(wsl -- ip -o -4 -json addr list eth0 | ConvertFrom-Json | %{ $_.addr_info.local } | ?{ $_ })
+
+netsh interface portproxy add v4tov4 listenport=6443 listenaddress=0.0.0.0 connectport=6443 connectaddress=$wsl_ip
+netsh interface portproxy add v4tov4 listenport=10250 listenaddress=0.0.0.0 connectport=10250 connectaddress=$wsl_ip
+netsh interface portproxy add v4tov4 listenport=2379 listenaddress=0.0.0.0 connectport=2379 connectaddress=$wsl_ip
+netsh interface portproxy add v4tov4 listenport=2380 listenaddress=0.0.0.0 connectport=2380 connectaddress=$wsl_ip
+netsh interface portproxy add v4tov4 listenport=10259 listenaddress=0.0.0.0 connectport=10259 connectaddress=$wsl_ip
+netsh interface portproxy add v4tov4 listenport=10257 listenaddress=0.0.0.0 connectport=10257 connectaddress=$wsl_ip

@@ -1,0 +1,78 @@
+#!/bin/bash
+
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+
+if [ "$SCRIPTPATH" == '.' ]
+then
+	SCRIPTPATH=$(dirname "$BASH_SOURCE")
+fi
+
+if [ $1 == "--help" ];
+then
+    echo "Preparing Cluster node"
+    echo "\n\nUsage:"
+    echo "Usage for decrypting: ./unicrypt -d [password] -f [file]"
+    exit 0
+fi
+
+is_loadbalancer=false
+is_worker=true
+is_boss=false
+secret_key=SECRET
+need_chmod=false
+
+ip_lb=$(ip a show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f1)
+ip_self=$(ip a show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f1)
+
+req_flag=0
+
+options=":s:i:n:mwlcb"
+while getopts $options opt
+do
+        case $opt in
+                s) secret_key=$OPTARG ;;
+				i) ip_self=$OPTARG ;;
+				n) ip_lb=$OPTARG ;;
+                m) password=$OPTARG; $req_flag && is_worker=false; req_flag=$((req_flag+1)) ;;
+                w) password=$OPTARG; $req_flag && is_worker=true; req_flag=$((req_flag+1)) ;;
+				l) is_loadbalancer=true ;;
+				c) need_chmod=true ;;
+				b) is_boss=true ;;
+                \? ) echo "Use ./unicrypt --help to show help."; echo "Unknown option: -$OPTARG" >&2; exit 1;;
+                :  ) echo "Use ./unicrypt --help to show help."; echo "Missing option argument for -$OPTARG" >&2; exit 1;;
+                *  ) echo "Use ./unicrypt --help to show help."; echo "Unimplemented option: -$opt" >&2; exit 1;;
+        esac
+done
+
+if [ $req_flag -gt 1 ]
+then
+    echo "Too many flags" >&2; exit 1;
+fi
+
+if $need_chmod
+then
+    sudo chmod u+x "$SCRIPTPATH/boss.sh"
+	sudo chmod u+x "$SCRIPTPATH/master.sh"
+	sudo chmod u+x "$SCRIPTPATH/master_finish.sh"
+	sudo chmod u+x "$SCRIPTPATH/worker.sh"
+	sudo chmod u+x "$SCRIPTPATH/lb.sh"
+	
+
+if $is_loadbalancer
+then
+    bash "$SCRIPTPATH"/lb.sh 
+fi
+
+if $is_worker
+then
+    bash "$SCRIPTPATH"/worker.sh 
+else
+    if $is_boss
+	then
+	    bash "$SCRIPTPATH"/boss.sh
+	else
+	    bash "$SCRIPTPATH"/master.sh
+	fi
+	bash "$SCRIPTPATH"/master_finish.sh
+fi
