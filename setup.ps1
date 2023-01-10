@@ -1,14 +1,30 @@
-netsh advfirewall firewall add rule name= "Open Port 6443 K8S" dir=in action=allow protocol=TCP localport=80
-netsh advfirewall firewall add rule name= "Open Port 6443 K8S" dir=in action=allow protocol=TCP localport=8080
-netsh advfirewall firewall add rule name= "Open Port 6443 K8S" dir=in action=allow protocol=TCP localport=443
-netsh advfirewall firewall add rule name= "Open Port 6443 K8S" dir=in action=allow protocol=TCP localport=9090
-netsh advfirewall firewall add rule name= "Open Port 6443 K8S" dir=in action=allow protocol=TCP localport=9099
-netsh advfirewall firewall add rule name= "Open Port 6443 K8S" dir=in action=allow protocol=TCP localport=6443
-netsh advfirewall firewall add rule name= "Open Port 10250 K8S" dir=in action=allow protocol=TCP localport=10250
-netsh advfirewall firewall add rule name= "Open Port 2379 K8S" dir=in action=allow protocol=TCP localport=2379
-netsh advfirewall firewall add rule name= "Open Port 2380 K8S" dir=in action=allow protocol=TCP localport=2380
-netsh advfirewall firewall add rule name= "Open Port 10259 K8S" dir=in action=allow protocol=TCP localport=10259
-netsh advfirewall firewall add rule name= "Open Port 10257 K8S" dir=in action=allow protocol=TCP localport=10257
+netsh advfirewall firewall add rule name= "Open Port 9153 K8S" dir=in action=allow protocol=ANY localport=9153
+netsh advfirewall firewall add rule name= "Open Port 53 K8S" dir=in action=allow protocol=ANY localport=53
+netsh advfirewall firewall add rule name= "Open Port 80 K8S" dir=in action=allow protocol=ANY localport=80
+netsh advfirewall firewall add rule name= "Open Port 8080 K8S" dir=in action=allow protocol=ANY localport=8080
+netsh advfirewall firewall add rule name= "Open Port 443 K8S" dir=in action=allow protocol=ANY localport=443
+netsh advfirewall firewall add rule name= "Open Port 9090 K8S" dir=in action=allow protocol=ANY localport=9090
+netsh advfirewall firewall add rule name= "Open Port 9099 K8S" dir=in action=allow protocol=ANY localport=9099
+netsh advfirewall firewall add rule name= "Open Port 6443 K8S" dir=in action=allow protocol=ANY localport=6443
+netsh advfirewall firewall add rule name= "Open Port 10250 K8S" dir=in action=allow protocol=ANY localport=10250
+netsh advfirewall firewall add rule name= "Open Port 2379 K8S" dir=in action=allow protocol=ANY localport=2379
+netsh advfirewall firewall add rule name= "Open Port 2380 K8S" dir=in action=allow protocol=ANY localport=2380
+netsh advfirewall firewall add rule name= "Open Port 10259 K8S" dir=in action=allow protocol=ANY localport=10259
+netsh advfirewall firewall add rule name= "Open Port 10257 K8S" dir=in action=allow protocol=ANY localport=10257
+
+netsh advfirewall firewall add rule name= "Open Port 9153 K8S" dir=out action=allow protocol=ANY localport=9153
+netsh advfirewall firewall add rule name= "Open Port 53 K8S" dir=out action=allow protocol=ANY localport=53
+netsh advfirewall firewall add rule name= "Open Port 80 K8S" dir=out action=allow protocol=ANY localport=80
+netsh advfirewall firewall add rule name= "Open Port 8080 K8S" dir=out action=allow protocol=ANY localport=8080
+netsh advfirewall firewall add rule name= "Open Port 443 K8S" dir=out action=allow protocol=ANY localport=443
+netsh advfirewall firewall add rule name= "Open Port 9090 K8S" dir=out action=allow protocol=ANY localport=9090
+netsh advfirewall firewall add rule name= "Open Port 9099 K8S" dir=out action=allow protocol=ANY localport=9099
+netsh advfirewall firewall add rule name= "Open Port 6443 K8S" dir=out action=allow protocol=ANY localport=6443
+netsh advfirewall firewall add rule name= "Open Port 10250 K8S" dir=out action=allow protocol=ANY localport=10250
+netsh advfirewall firewall add rule name= "Open Port 2379 K8S" dir=out action=allow protocol=ANY localport=2379
+netsh advfirewall firewall add rule name= "Open Port 2380 K8S" dir=out action=allow protocol=ANY localport=2380
+netsh advfirewall firewall add rule name= "Open Port 10259 K8S" dir=out action=allow protocol=ANY localport=10259
+netsh advfirewall firewall add rule name= "Open Port 10257 K8S" dir=out action=allow protocol=ANY localport=10257
 
 Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
@@ -20,6 +36,8 @@ wsl --set-default-version 2
 
 $wsl_ip=$(wsl -- ip -o -4 -json addr list eth0 | ConvertFrom-Json | %{ $_.addr_info.local } | ?{ $_ })
 
+netsh interface portproxy add v4tov4 listenport=9153 listenaddress=0.0.0.0 connectport=9153 connectaddress=$wsl_ip
+netsh interface portproxy add v4tov4 listenport=53 listenaddress=0.0.0.0 connectport=53 connectaddress=$wsl_ip
 netsh interface portproxy add v4tov4 listenport=80 listenaddress=0.0.0.0 connectport=80 connectaddress=$wsl_ip
 netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=8080 connectaddress=$wsl_ip
 netsh interface portproxy add v4tov4 listenport=443 listenaddress=0.0.0.0 connectport=443 connectaddress=$wsl_ip
