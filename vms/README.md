@@ -39,6 +39,17 @@ git clone "<b>Paste_here_link_to_github_repo</b>" .
 </pre>
 
 3. Change values in Vagrantfile to fit your configuration
+
+| Variable   | Description                                                                      | Default value |
+| --------   | -------------------------------------------------------------------------------- | :-----------: |
+| MASTER_NUM | Number of vms that will connect<br>cluster as master nodes                       | 2             |
+| WORKER_NUM | Number of vms that will connect<br>cluster as worker nodes                       | 1             |
+| IS_LB      | Should loadbalancer vm be deployed                                               | 1             |
+| IS_BOSS    | Should first cluster master node vm be deployed                                  | 1             |
+| SIDE_OS    | OS type for choosing correct network interface (0 - windows, 1 - mac, 2 - linux) | 0             |
+
+For proper working Vms total count per pc should be considered as 1 vm per 2 cpus and 10 GB RAM if applicable.
+
 4. Type
 
 ```bash
