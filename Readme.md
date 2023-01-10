@@ -22,9 +22,11 @@ This is infrastructure repo for creating on-prem k3s cluster on all available pl
 
 ## Compatibility matrix
 
-| OS                                 | Status             |
-| ---                                | :------:           |
-| Windows WSL                        | :recycle:          |
-| Windows/Mac OS/Linux VirtualBox VM | :white_check_mark: |
-| Linux Bare-Metall                  | :white_check_mark: |
-| Raspberian Bare-Metall             | :recycle:          |
+| OS                                 | Status                  | Condition        |
+| ---                                | :------:                | :--------------: |
+| Windows WSL                        | :gear:                  | in progress      |
+| Windows Bare-Metall                | :no_entry:              | abandoned        |
+| Windows/Mac OS VirtualBox VM       | :white_check_mark:      | done and tested  |
+| Linux VirtualBox VM                | :ballot_box_with_check: | almost done      |
+| Linux Bare-Metall                  | :heavy_check_mark:      | done, not tested |
+| Raspberian Bare-Metall             | :electron:              | planned          |
