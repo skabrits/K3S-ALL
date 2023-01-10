@@ -21,7 +21,7 @@ This is folder for running K3S on vms using vagrant & virtualbox toolset
 
 1. Install [Vagrant](https://www.vagrantup.com/downloads) and install vbguest plugin
 
-```
+```bash
 vagrant plugin install vagrant-vbguest
 ```
 
@@ -41,10 +41,18 @@ git clone "<b>Paste_here_link_to_github_repo</b>" .
 3. Change values in Vagrantfile to fit your configuration
 4. Type
 
-```
+```bash
 vagrant up
 ```
 
 5. It is that easy - you are done
 6. (optional) If to use kubectl from dev machine, copy config file at `"vms/configs/config"` to `$HOME/.kube/config` 
 or use `KUBECONFIG` enviroment variable tostore path to config file
+
+## Uninstall
+
+1. Type
+
+```bash
+vagrant destroy -f
+```
