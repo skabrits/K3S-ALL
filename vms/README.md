@@ -13,8 +13,10 @@ This is folder for running K3S on vms using vagrant & virtualbox toolset
 <details>
 <summary>Windows Hyper-V</summary>
 <br>
-To make VirtualBox vms function properly, you must disable Hyper-V and enable windows VMs 
-(in Apps & Features > Optional Features > More optional Features) first
+1. To make VirtualBox vms function properly disable Hyper-V and enable windows VMs 
+(in Apps & Features > Optional Features > More optional Features)
+<br>
+2. Disable core isolation
 </details>
 
 1. Install [Vagrant](https://www.vagrantup.com/downloads) and install vbguest plugin
