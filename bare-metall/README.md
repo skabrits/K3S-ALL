@@ -1,4 +1,4 @@
-# Bare-Metall
+# K3S on Bare-Metall
 
 ## Overview
 
