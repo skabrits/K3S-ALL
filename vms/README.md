@@ -49,6 +49,8 @@ vagrant up
 6. (optional) If to use kubectl from dev machine, copy config file at `"vms/configs/config"` to `$HOME/.kube/config` 
 or use `KUBECONFIG` enviroment variable tostore path to config file
 
+To set env var you should use `export` command on unix-like systems and `set` on windows
+
 ## Uninstall
 
 1. Type
